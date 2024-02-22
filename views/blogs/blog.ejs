@@ -1,13 +1,13 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="card mt-3 col-md-8 offset-2" >
-    <img src="<%= blogPost.image %>" class="card-img-top" alt="...">
+    <img src="/images/<%= blogPost._id %>" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title"><%= blogPost.title %></h5>
       <p class="card-text">
         <small class="text-muted">by <%= blogPost.author %></small>
       </p>
-      <p class="card-text"><%= blogPost.body %></p>
+      <div style="white-space: pre-wrap;"><%= blogPost.body %></div>
       
 
     </div>
@@ -19,3 +19,4 @@
             </form>
         </div>
   </div>
+
