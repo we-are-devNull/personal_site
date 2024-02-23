@@ -6,26 +6,17 @@ import mongoose from 'mongoose';
 import engine from 'ejs-mate';
 import Blog from './models/blog.js';
 import methodOverride from 'method-override';
-import multer from 'multer';
-import { blogSchema } from './schemas/schemas.js';
-import { fileTypeFromBuffer } from 'file-type';
 import catchAsync from './utils/catchAsync.js'; 
 import ExpressError from './utils/ExpressError.js'; 
+import blogs from './routes/blogs.js';
+import session from 'express-session';
+import flash from 'connect-flash';
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 1024 * 1024 * 4, // Limit file size to 4MB
-    },
-});
-
-
 mongoose.connect('mongodb://localhost:27017/blogDB');
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -35,48 +26,35 @@ db.once('open', function() {
 app.engine('ejs', engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
-const validateBlog = (req, res, next) => {
-    const { error } = blogSchema.validate(req.body);
-    if (error) {    
-        throw new ExpressError(error.details.map(e => e.message).join(', '), 400);
-    } else {
-        if (req.file && req.file.buffer) {
-            validateImage(req.file.buffer);
-        }
-        next();
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24
     }
 
+};
+app.use(session(sessionConfig));
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
 
-}
-
-const validateImage = async (buff, next) => {
-    try {
-        const type = await fileTypeFromBuffer(buff);
-        if (!type || type.mime !== 'image/png') {
-            throw new ExpressError('Only PNG files are allowed', 400);
-        }
-    } catch (error) {
-        next(error); // Pass any errors to the next middleware
-    }
-}
+app.use('/blog', blogs);
 
 app.get('/', (req, res) => {
   res.render('home.ejs');
 }); 
-
-app.get('/blog', catchAsync(async (req, res) => {
-    const blogPosts = await Blog.find({});
-    res.render('blogs/index', { blogPosts });
-
-}));
-
-app.get('/blog/new', (req, res) => {
-    res.render('blogs/new');
-});
 
 app.get('/images/:blogId', catchAsync(async (req, res) => {
     const blogId = req.params.blogId;
@@ -89,69 +67,6 @@ app.get('/images/:blogId', catchAsync(async (req, res) => {
     res.contentType('image/png');
     res.send(blogPost.image);
 }));
-
-app.post('/blog',upload.single('image'), validateBlog, catchAsync(async (req, res, next) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-
-    const blogPost = new Blog({
-        title: req.body.title,
-        body: req.body.body,
-        image: req.file.buffer, 
-    });
-    
-    await blogPost.save();
-    res.redirect(`/blog/${blogPost._id}`);
-}));
-    
-    
-   
-
-app.get('/blog/:id', catchAsync(async (req, res) => {
-        const blogPost = await Blog.findById(req.params.id);
-        if (!blogPost) {
-            return res.status(404).send('Blog post not found');
-        }
-        res.render('blogs/blog', { blogPost });
-        console.error('Error in GET /blog/:id:', error);
-        res.status(500).send('Internal Server Error');
-}));
-
-app.put('/blog/:id',upload.single('image'), validateBlog, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const blogPost = await Blog.findById(id);
-
-    if (req.body.title) {
-        blogPost.title = req.body.title;
-    }
-    if (req.body.body) {
-        blogPost.body = req.body.body;
-    }
-
-    if (req.file && req.file.buffer) {
-        blogPost.image = req.file.buffer;
-    }
-
-    await blogPost.save();
-    res.redirect(`/blog/${blogPost._id}`);
-
-}));
-
-app.delete('/blog/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Blog.findByIdAndDelete(id);
-    res.redirect('/blog');
-}));
-
-app.get('/blog/:id/edit', catchAsync(async (req, res) => {
-    const blogPost = await Blog.findById(req.params.id);
-    if (!blogPost) {
-        return next(new ExpressError('Blog Post Not Found', 404));
-    }
-    res.render('blogs/edit', { blogPost });
-}));
-
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
