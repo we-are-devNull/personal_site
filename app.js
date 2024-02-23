@@ -7,12 +7,11 @@ import engine from 'ejs-mate';
 import Blog from './models/blog.js';
 import methodOverride from 'method-override';
 import multer from 'multer';
-const storage = multer.memoryStorage();
+import { blogSchema } from './schemas/schemas.js';
 import { fileTypeFromBuffer } from 'file-type';
 import catchAsync from './utils/catchAsync.js'; 
 import ExpressError from './utils/ExpressError.js'; 
-import { stat } from 'fs';
-import e from 'express';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +38,20 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
+
+const validateBlog = (req, res, next) => {
+    const { error } = blogSchema.validate(req.body);
+    if (error) {    
+        throw new ExpressError(error.details.map(e => e.message).join(', '), 400);
+    } else {
+        if (req.file && req.file.buffer) {
+            validateImage(req.file.buffer);
+        }
+        next();
+    }
+
+
+}
 
 const validateImage = async (buff, next) => {
     try {
@@ -77,12 +90,10 @@ app.get('/images/:blogId', catchAsync(async (req, res) => {
     res.send(blogPost.image);
 }));
 
-app.post('/blog',upload.single('image'), catchAsync(async (req, res, next) => {
+app.post('/blog',upload.single('image'), validateBlog, catchAsync(async (req, res, next) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-
-    validateImage(req.file.buffer);
 
     const blogPost = new Blog({
         title: req.body.title,
@@ -107,7 +118,7 @@ app.get('/blog/:id', catchAsync(async (req, res) => {
         res.status(500).send('Internal Server Error');
 }));
 
-app.put('/blog/:id',upload.single('image'), catchAsync(async (req, res) => {
+app.put('/blog/:id',upload.single('image'), validateBlog, catchAsync(async (req, res) => {
     const { id } = req.params;
     const blogPost = await Blog.findById(id);
 
@@ -119,7 +130,6 @@ app.put('/blog/:id',upload.single('image'), catchAsync(async (req, res) => {
     }
 
     if (req.file && req.file.buffer) {
-        validateImage(req.file.buffer);
         blogPost.image = req.file.buffer;
     }
 
@@ -158,3 +168,5 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
+
+
