@@ -1,32 +1,36 @@
 
 <% layout('layouts/boilerplate') %>
-<h1>Blog</h1>
-<div>
-    <a href="/blog/new">New Post</a>
+<link rel="stylesheet" href="/stylesheets/blogIndex.css">
+<h1 class="text-center mt-4">Blog</h1>
+<div class="text-end">
+    <% if (isAdmin) { %>
+        <a href="/blog/new" class="btn btn-primary mb-3">New Post</a>
+    <% } %>
 </div>
 <% for (let blog of blogPosts) {%>
-    <div class="card mb-3" >
+    <div class="card mb-3">
         <div class="row">
             <div class="col-md-4">
                 <img src="/images/<%= blog._id %>" class="img-fluid h-100">
             </div>
             <div class="col-md-8 d-flex">
-                <div class="card-body h-100 d-flex flex-column ">
-                    <h5 class="card-title"><%= blog.title %> </h5>
-                    <p class="card-text">
-                        <small class="text-muted">by <%= blog.author %></p></small> 
-                    </p>
-                    <p class="card-text"><div style="white-space: pre-wrap;"><%= blog.body %></div></p>
+                <div class="card-body h-100 d-flex flex-column">
+                    <h5 class="card-title"><%= blog.title %></h5>
+                    <p class="card-text author"><small class="text-muted">by <%= blog.author.username %></small></p>
+                    <div class="card-text body text-start" style="height: 150px; overflow-y: hidden; white-space: pre-wrap;">
+                        <p><%= blog.body %></p>
+                    </div>
                     <div class="mt-auto text-center">
                         
                     </div>
                     <div class="mt-auto text-end">
-                        <a href="/blog/<%= blog._id %>"class="btn btn-primary mt-auto">View</a>
+                        <a href="/blog/<%= blog._id %>" class="btn btn-primary mt-auto">View</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-<% } %>
+    <% } %>
+    
 
 

@@ -8,9 +8,15 @@ import Blog from './models/blog.js';
 import methodOverride from 'method-override';
 import catchAsync from './utils/catchAsync.js'; 
 import ExpressError from './utils/ExpressError.js'; 
-import blogs from './routes/blogs.js';
+import blogsRoutes from './routes/blogs.js';
+import userRoutes from './routes/users.js';
 import session from 'express-session';
 import flash from 'connect-flash';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import User from './models/user.js';
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -31,26 +37,50 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
-
+app.use(mongoSanitize());
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+      },
+      reportOnly: false,
+    })
+  );
+    
 const sessionConfig = {
+    name: 'mjm_sessionID',
     secret: 'thisshouldbeabettersecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24,
         maxAge: 1000 * 60 * 60 * 24
     }
 
 };
 app.use(session(sessionConfig));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 });
 
-app.use('/blog', blogs);
+app.use('/blog', blogsRoutes);
+app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
   res.render('home.ejs');

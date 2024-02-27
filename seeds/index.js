@@ -1,8 +1,12 @@
-const mongoose = require('mongoose');   
-const Blog = require('../models/blog');
-const blogs = require('./blog_seed');
-const fs = require('fs').promises;
-const path = require('path');
+import mongoose from 'mongoose';
+import Blog from '../models/blog.js';
+import blogs from './blog_seed.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 mongoose.connect('mongodb://localhost:27017/blogDB');
 

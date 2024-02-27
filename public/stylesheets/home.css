@@ -1,0 +1,22 @@
+body {
+   height: 100vh; 
+   /* background-color: #22242a; */
+}
+
+main {
+    margin: auto;
+    max-width: 60%;
+}
+
+.cover-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh; /* Use 100% of the viewport height */
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+}
+

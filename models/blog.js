@@ -3,7 +3,10 @@ const Schema = mongoose.Schema;
 
 const BlogSchema = new Schema({
     title: String,
-    author: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     image: Buffer,
     body: String
     });

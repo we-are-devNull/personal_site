@@ -5,18 +5,20 @@
     <div class="card-body">
       <h5 class="card-title"><%= blogPost.title %></h5>
       <p class="card-text">
-        <small class="text-muted">by <%= blogPost.author %></small>
+        <small class="text-muted">by <%= blogPost.author.username %></small>
       </p>
       <div style="white-space: pre-wrap;"><%= blogPost.body %></div>
       
 
-    </div>
-    <div class="card-footer">
-        <div class="d-flex justify-content-between">
-            <a href="/blog/<%= blogPost._id %>/edit" class="btn btn-primary">Edit</a>
-            <form action="/blog/<%= blogPost._id %>?_method=DELETE" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-        </div>
+    </div> 
+    <% if (currentUser && blogPost.author.equals(currentUser) && blogPost.author.accountType === 'admin') { %>
+      <div class="card-footer">
+          <div class="d-flex justify-content-between">
+              <a href="/blog/<%= blogPost._id %>/edit" class="btn btn-primary">Edit</a>
+              <form action="/blog/<%= blogPost._id %>?_method=DELETE" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+          </div>
+    <% } %>
   </div>
 
