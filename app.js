@@ -17,12 +17,16 @@ import LocalStrategy from 'passport-local';
 import User from './models/user.js';
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
+import MongoStore from 'connect-mongo';
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-mongoose.connect('mongodb://localhost:27017/blogDB');
+const dbURL = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
+const secret = process.env.SECRET || 'thisshouldbeabettersecret';
+
+mongoose.connect(dbURL);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -44,14 +48,26 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
         styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+        objectSrc: ["'self'"],
       },
       reportOnly: false,
     })
   );
     
+const store = MongoStore.create({
+    mongoUrl: dbURL,
+    secret,
+    touchAfter: 24 * 60 * 60
+});
+
+store.on("error", function(e) {
+    console.log("Session Store Error", e);
+});
+
 const sessionConfig = {
+    store,
     name: 'mjm_sessionID',
-    secret: 'thisshouldbeabettersecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -86,6 +102,10 @@ app.get('/', (req, res) => {
   res.render('home.ejs');
 }); 
 
+app.get('/resume', (req, res) => {
+    res.render('resume.ejs');
+  }); 
+
 app.get('/images/:blogId', catchAsync(async (req, res) => {
     const blogId = req.params.blogId;
     const blogPost = await Blog.findById(blogId);
@@ -110,8 +130,9 @@ app.use((err, req, res, next) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
 
 
