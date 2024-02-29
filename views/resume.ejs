@@ -1,15 +1,124 @@
 <%  layout('layouts/boilerplate') %>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/stylesheets/resume.css">
+<style>
+  html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif}
+  </style>
+<div class="content margin-top" style="max-width:1400px;">
 
-<div class="container mt-5 mb-5">
-    <div class="row">
-      <div class="col text-center mb-3">
-        <a href="images/resume.pdf" download="images/resume.pdf" class="btn btn-primary">Download Resume</a>
-      </div>
+  <!-- The Grid -->
+  <div class="row-padding">
+  
+    <!-- Left Column -->
+    <div class="third">
+    
+      <div class="white text-grey card-4">
+        <div class="display-container">
+          <img src="images/sq_avatar.png" style="width:100%" alt="Avatar">
+          <div class="display-bottomleft container text-black">
+            <h2 class="light-blue-text">Michael J Martire</h2>
+          </div>
+        </div>
+        <div class="container mt-4">
+          <p><i class="fa fa-briefcase fa-fw margin-right large blue-text"></i>Application Security Engineer</p>
+          <p><i class="fa fa-home fa-fw margin-right large blue-text"></i>CT, USA</p>
+          <hr>
+
+          <p class="large"><b><i class="fa fa-asterisk fa-fw margin-right blue-text"></i>Certifications</b></p>
+          <p>OSCP</p>
+          <p>CISSP</p>
+          <p>GCP Security Engineer</p>
+          <p>GCP Associate Cloud Engineer</p>
+          <br>
+
+          <p class="large text-theme"><b><i class="fa fa-globe fa-fw margin-right blue-text"></i>Skills</b></p>
+          <p>Python</p>
+          <p>Javascript</p>
+          <p>React</p>
+          <p>SAST/DAST</p>
+          <p>Web & API Pentetration Testing</p>
+          <p>Threat Modeling</p>
+          <br>
+
+          <a class="large text-theme" target="blank" href="https://www.linkedin.com/in/michaeljmartire/"><b><i class="fa fa-linkedin fa-fw margin-right blue-text" ></i>LinkedIn</b></a>
+          <br>
+          <div class="mb-4"></div>
+        </div>
+      </div><br>
+
+    <!-- End Left Column -->
     </div>
-    <div class="row justify-content-center">
-      <div class="col-lg-8 col-md-12 col-sm-12">
-        <img src="images/resume.png" class="img-fluid shadow" alt="Resume" style="border: 3px solid black;">
+
+    <!-- Right Column -->
+    <div class="twothird">
+    
+      <div class="container card white margin-bottom">
+        <h2 class="text-grey padding-16"><i class="fa fa-suitcase fa-fw margin-right xxlarge blue-text"></i>Work Experience</h2>
+        <div class="container">
+          <h5 class="opacity"><b>Senior Application Security Engineer / Prosper Marketplace</b></h5>
+          <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2021 - <span class="tag blue-background round">Present</span></h6>
+          <ul class="mt-3">
+            <li>Successfully implemented and automated SAST and DAST tools in the CI/CD pipeline, enabling continuous security checks throughout the development process.</li>
+            <li>Led and managed penetration testing efforts, ensuring rigorous evaluation of application security. Collaborated with development teams on prioritizing and implementing remediation measures based on test findings.</li>
+            <li>Worked closely with development, engineering, and product teams to provide security guidance during architecture and design reviews, influencing secure application development practices, and fostering a culture of security awareness.</li>
+         </ul>
+          <hr>
+        </div>
+        <div class="container">
+          <h5 class="opacity"><b>Application Security Engineer/ Travelers</b></h5>
+          <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2020 - 2021</h6>
+         <ul class="mt-3">
+            <li>Collaborated with architects, developers, and other Application Security Engineers to guide the Application Security program.</li>
+            <li>Researched attack methods to help ensure all relevant risks were identified and addressed.</li>
+            <li>Guided product and engineering teams to build secure features through security architecture reviews and threat modeling.</li>
+         </ul>
+          <hr>
+        </div>
+        <div class="container">
+          <h5 class="opacity"><b>Threat & Vulnerability Management Analyst / Realogy Holdings Corp.</b></h5>
+          <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2019 - 2020</h6>
+          <ul class="mt-3">
+            <li>Coordinated scan schedules, risk acceptances, and remediation of vulnerabilities for over 65,000 devices.</li>
+            <li>Synchronized efforts between penetration testers and development teams for the identification and correction of findings for over 12 web and mobile applications.</li>
+          </ul>
+          <br>
+        </div>
+        <div class="container">
+            <h5 class="opacity"><b>Senior Security Analyst / Kyber Security</b></h5>
+            <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2017 - 2019</h6>
+            <br>
+          </div>
+          <div class="container">
+            <h5 class="opacity"><b>Electronics Technician First Class / U.S. Navy</b></h5>
+            <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2007 - 2015</h6>
+            <br>
+          </div>
       </div>
+
+
+      <div class="container card white mb-5">
+        <h2 class="text-grey padding-16"><i class="fa fa-certificate fa-fw margin-right xxlarge blue-text"></i>Education</h2>
+        <div class="container">
+          <h5 class="opacity"><b>Sacred Heart University</b></h5>
+          <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2018-2019</h6>
+          <p>Graduate Certificate in Cyber Security</p>
+          <hr>
+        </div>
+        <div class="container">
+          <h5 class="opacity"><b>Sacred Heart University</b></h5>
+          <h6 class="blue-text"><i class="fa fa-calendar fa-fw margin-right"></i>2015-2018</h6>
+          <p>Bachelor of Science in Computer Science</p>
+          <p class="text-gray mt-0">Summa Cum Laude</p>
+          <hr>
+        </div>
+      </div>
+
+    <!-- End Right Column -->
     </div>
+    
+  <!-- End Grid -->
   </div>
   
+  <!-- End Page Container -->
+</div>
