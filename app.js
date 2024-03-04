@@ -18,12 +18,14 @@ import User from './models/user.js';
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import MongoStore from 'connect-mongo';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbURL = process.env.DB_URL || 'mongodb://localhost:27017/blogDB';
+const dbURL = process.env.DB_URL || 'mongodb://mongodb:27017/blogDB';
 const secret = process.env.SECRET || 'thisshouldbeabettersecret';
 
 mongoose.connect(dbURL);
