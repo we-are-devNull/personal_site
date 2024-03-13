@@ -1,6 +1,7 @@
 import ExpressError from './utils/ExpressError.js';
 import { blogSchema } from './schemas/schemas.js';
 import { fileTypeFromBuffer } from 'file-type';
+import Comment from './models/comment.js';
 
 export const isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -52,3 +53,15 @@ export const validateBlog = (req, res, next) => {
         next();
     }
 }
+
+export const isCommentAuthor = async (req, res, next) =>{
+    req.commentId = req.params.commentId;
+    const comment = await Comment.findById(req.params.commentId).populate('author')
+    const author = comment.author._id.toString();
+    const user = req.user._id.toString();
+    if (user != author) {
+        req.flash('error', 'You do not have permission to do that!');
+        return res.redirect(`/blog/${req.params.id}`);
+    }
+    next();
+};

@@ -1,0 +1,20 @@
+<% layout('layouts/boilerplate') %>
+<h1 class="text-center mt-3">New Comment</h1>
+<div class="col-6 offset-3">
+
+    <form action="/blog/<%= blogID %>/comment" method="POST"  class="mb-3 validated-form" novalidate>
+        <div class=" mb-3" >
+            <label for="body" class="form-label" >Comment</label>
+            <textarea class="form-control" 
+                placeholder="Your comment..." id="body" 
+                name="body" style="min-height: 500px;" required></textarea>
+
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+        <a href="/blog/<%= blogID %>">Return to blog</a>
+      </form>
+</div>
+
+

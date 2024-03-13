@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="card mt-3 col-md-8 offset-md-2" >
+<div class="card mt-3 col-md-8 offset-md-2 mb-4" >
     <img src="/images/<%= blogPost._id %>" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title"><%= blogPost.title %></h5>
@@ -21,4 +21,42 @@
           </div>
     <% } %>
   </div>
+</div>
+
+<div class="card mt-3 col-md-8 offset-md-2 mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="card-title mb-0">Comments</h5>
+      <% if (currentUser) { %>
+        <a href="/blog/<%= blogPost._id %>/comment/new" class="btn btn-primary">Comment</a>
+      <% } %>
+    </div>
+
+    <!-- Wrapper for comments to maintain consistent width -->
+    <div class="col-md-12">
+      <% for (let comment of comments) { %>
+        <div class="card mb-3 shadow">
+          <div class="card-body h-100 d-flex flex-column">
+            <p class="card-text author"><small class="text-muted"><%= comment.author.username %></small></p>
+            <div class="card-text body text-start">
+              <p><%= comment.body %></p>
+            </div>
+          </div>
+          <% if (currentUser && comment.author.equals(currentUser)) { %>
+            <div class="card-footer">
+              <div class="d-flex justify-content-between">
+                <a href="/blog/<%= blogPost._id %>/comment/<%= comment._id %>/edit" class="btn btn-primary">Edit</a>
+                <form action="/blog/<%= blogPost._id %>/comment/<%= comment._id %>?_method=DELETE" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+
 

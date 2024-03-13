@@ -1,4 +1,3 @@
-import User from '../models/user.js';
 import express from 'express';
 const router = express.Router();
 import catchAsync from '../utils/catchAsync.js';

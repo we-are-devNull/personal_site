@@ -1,9 +1,8 @@
 import express from 'express';
 const router = express.Router();
 import catchAsync from '../utils/catchAsync.js'; 
-import Blog from '../models/blog.js';
 import multer from 'multer';
-import  { isAdmin, validateBlog, isLoggedIn } from '../middleware.js';
+import  { isLoggedIn, isAdmin, validateBlog, isCommentAuthor} from '../middleware.js';
 import * as blogs from '../controllers/blogs.js';
 
 
@@ -26,5 +25,15 @@ router.route('/:id')
     .delete(isAdmin, catchAsync(blogs.deleteBlog));
 
 router.get('/:id/edit', isAdmin, catchAsync(blogs.renderEditForm));
+
+router.get('/:id/comment/new', isLoggedIn, catchAsync(blogs.renderNewCommentForm));
+
+router.post('/:id/comment', isLoggedIn, catchAsync(blogs.createComment))
+    
+router.route('/:id/comment/:commentId')
+    .put( isLoggedIn,isCommentAuthor, catchAsync(blogs.updateComment))
+    .delete(isLoggedIn, isCommentAuthor, catchAsync(blogs.deleteComment));
+
+router.get('/:id/comment/:commentId/edit', isLoggedIn, isCommentAuthor, catchAsync(blogs.renderCommentEditForm));
 
 export default router;
